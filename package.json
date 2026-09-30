@@ -2,14 +2,14 @@
   "private": true,
   "name": "my-game",
   "version": "0.1.0",
-  "description": "A Colyseus multiplayer server",
+  "description": "Neon Crypt: a co-op dungeon crawler for 2-4 players, built on Colyseus 0.18",
   "type": "module",
   "engines": {
     "node": ">= 22.0.0"
   },
   "scripts": {
     "start": "vite",
-    "loadtest": "tsx loadtest/example.ts --room my_room --numClients 2",
+    "loadtest": "tsx loadtest/example.ts --room dungeon --numClients 2",
     "build": "vite build",
     "clean": "rimraf dist",
     "test": "mocha -r tsx test/**.test.ts --exit --timeout 15000",

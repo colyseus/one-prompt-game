@@ -4,21 +4,50 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="data:," />
-    <title>Colyseus</title>
+    <title>Neon Crypt</title>
     <style>
-      body { font: 16px/1.5 system-ui, sans-serif; margin: 2rem auto; max-width: 848px; padding: 0 1rem; }
-      #status { font-weight: 600; }
-      #arena { position: relative; width: 800px; height: 600px; max-width: 100%; background: #1114; border-radius: .5rem; overflow: hidden; }
-      .player { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 4px; background: #4ea1ff; will-change: transform; }
-      .player.self { background: #ffd24e; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        display: grid; place-items: center; overflow: hidden;
+        background: radial-gradient(ellipse at center, #120d24 0%, #05040a 70%);
+        color: #e9e4ff; font: 14px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      }
+      canvas { display: block; image-rendering: auto; }
+      #menu {
+        position: fixed; inset: 0; display: grid; place-items: center;
+        background: rgba(5, 4, 10, 0.82); backdrop-filter: blur(3px);
+      }
+      #menu[hidden] { display: none; }
+      .panel { text-align: center; padding: 2rem 2.5rem; border: 1px solid #2a2350; border-radius: 12px; background: #0b0918; box-shadow: 0 0 40px #8a5cff33; }
+      h1 { margin: 0 0 .25rem; font-size: 2.6rem; letter-spacing: .12em; color: #fff; text-shadow: 0 0 12px #8a5cff, 0 0 32px #8a5cff; }
+      .tagline { margin: 0 0 1.5rem; color: #8f88b3; }
+      .modes { display: flex; gap: 1rem; justify-content: center; }
+      button {
+        font: inherit; font-weight: 700; letter-spacing: .1em; cursor: pointer;
+        padding: .8rem 1.4rem; border-radius: 8px; background: transparent;
+        border: 2px solid var(--c); color: var(--c); box-shadow: 0 0 14px color-mix(in srgb, var(--c) 40%, transparent);
+      }
+      button:hover { background: color-mix(in srgb, var(--c) 15%, transparent); }
+      button small { display: block; font-weight: 400; letter-spacing: 0; opacity: .75; }
+      .keys { margin: 1.5rem 0 0; color: #6f6893; }
+      kbd { border: 1px solid #3a3360; border-radius: 4px; padding: 0 .35em; color: #c9b5ff; }
+      #menu-message { min-height: 1.5em; margin: 1rem 0 0; color: #ffd84a; }
     </style>
   </head>
   <body>
-    <h1>Colyseus</h1>
-    <p id="status">Connecting…</p>
-    <div id="arena"></div>
-    <p>Move with <kbd>WASD</kbd> or the arrow keys. Open a second tab to see another player.</p>
-    <p><a href="/playground">Playground</a> · <a href="/monitor">Monitor</a></p>
+    <canvas id="game"></canvas>
+    <div id="menu">
+      <div class="panel">
+        <h1>NEON CRYPT</h1>
+        <p class="tagline">co-op dungeon for 2–4 heroes · 5 shared lives</p>
+        <div class="modes">
+          <button data-mode="normal" style="--c: #27f3ff">NORMAL<small>slimes amble</small></button>
+          <button data-mode="hard" style="--c: #ff4a6a">HARD<small>slimes sprint</small></button>
+        </div>
+        <p class="keys"><kbd>WASD</kbd>/<kbd>←↑↓→</kbd> move · <kbd>SPACE</kbd> swing · open another tab to add a hero</p>
+        <p id="menu-message"></p>
+      </div>
+    </div>
     <script type="module" src="/src/client/index.ts"></script>
   </body>
 </html>

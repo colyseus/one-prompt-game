@@ -4,7 +4,7 @@ import { cli, Options } from "@colyseus/loadtest";
 export async function main(options: Options) {
   const client = new Client(options.endpoint);
   const room: Room = await client.joinOrCreate(options.roomName, {
-    // your join options here...
+    mode: "normal",
   });
 
   console.log("joined successfully!");
