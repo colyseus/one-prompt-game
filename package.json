@@ -14,7 +14,9 @@
     "clean": "rimraf dist",
     "test": "mocha -r tsx test/**.test.ts --exit --timeout 15000",
     "dev": "vite",
-    "build:client": "vite build --mode client"
+    "build:client": "vite build --mode client",
+    "deploy:backend": "bash scripts/deploy-backend.sh",
+    "deploy:frontend": "npm run build:client && npx wrangler@4 pages deploy dist/client --project-name one-prompt-game --branch main"
   },
   "author": "",
   "license": "MIT",

@@ -20,8 +20,9 @@ const menuEl = document.getElementById("menu")!;
 const menuMessageEl = document.getElementById("menu-message")!;
 const renderer = new Renderer(canvas);
 
+// The Cloudflare Pages build points at the shared demos server (.env.client); dev serves both from one origin.
 const client = new ColyseusSDK<typeof server>(
-  `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}`
+  import.meta.env.VITE_SERVER_URL ?? `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}`
 );
 
 type DungeonRoom = Room<(typeof server)["~rooms"]["dungeon"]["~room"]>;
