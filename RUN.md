@@ -31,7 +31,8 @@ ask for permission, so the tools were pre-approved instead.
 
 - `a7a48c5` Initial commit: the untouched `create-colyseus-app` scaffold (`--git`).
 - `5cd09b9`, tag `one-prompt-v1`: everything the agent wrote. [Diff](../../compare/a7a48c5...5cd09b9).
-- The commit after it adds this file and `PROMPT.md`, nothing else.
+- Later commits only add this file, `PROMPT.md` and the MIT license (plus the matching `license`
+  field in `package.json`); the code is exactly as the agent left it.
 
 ## Disclosures
 
