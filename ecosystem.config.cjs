@@ -2,7 +2,11 @@
 // /run/colyseus/<2567 + NODE_APP_INSTANCE>.sock, which nginx routes /one-prompt-game/<port>/ to.
 const SLUG      = 'one-prompt-game';
 const BASE      = 113;   // first socket 2567 + 113 = 2680
-const INSTANCES = 1;     // reserved decade 2680-2689; one process needs no Redis
+const INSTANCES = 1;     // reserved decade 2680-2689
+// Own DB: under COLYSEUS_CLOUD on a multi-core box the server uses Redis even for one
+// process, and RedisDriver's `roomcount`/`roomcaches` keys are shared per DB, so a
+// shared DB lets another demo's matchmaker create rooms here (and vice versa).
+const REDIS_DB  = 11;
 
 module.exports = {
   apps: Array.from({ length: INSTANCES }, (_, i) => ({
@@ -20,6 +24,7 @@ module.exports = {
     env: {
       NODE_ENV: 'production',
       NODE_APP_INSTANCE: String(BASE + i),
+      REDIS_URI: `redis://127.0.0.1:6379/${REDIS_DB}`,
       PUBLIC_ADDRESS_BASE: `demos.colyseus.cloud/${SLUG}`,
     },
   })),
