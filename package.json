@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "vite",
-    "loadtest": "tsx loadtest/example.ts --room my_room --numClients 2",
+    "loadtest": "tsx loadtest/example.ts --room dungeon --numClients 2",
     "build": "vite build",
     "clean": "rimraf dist",
     "test": "mocha -r tsx test/**.test.ts --exit --timeout 15000",
@@ -25,6 +25,7 @@
     "@types/express": "^5.0.6",
     "@types/mocha": "^10.0.1",
     "@types/node": "^22.13.13",
+    "@types/three": "^0.186.0",
     "mocha": "^11.7.5",
     "rimraf": "^5.0.0",
     "tsx": "^4.21.0",
@@ -36,6 +37,7 @@
     "@colyseus/schema": "^5.0.14",
     "@colyseus/tools": "^0.18.1",
     "colyseus": "^0.18.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "three": "^0.186.1"
   }
 }

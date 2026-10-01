@@ -3,22 +3,84 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="data:," />
-    <title>Colyseus</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫧</text></svg>" />
+    <title>Slime Dungeon</title>
     <style>
-      body { font: 16px/1.5 system-ui, sans-serif; margin: 2rem auto; max-width: 848px; padding: 0 1rem; }
-      #status { font-weight: 600; }
-      #arena { position: relative; width: 800px; height: 600px; max-width: 100%; background: #1114; border-radius: .5rem; overflow: hidden; }
-      .player { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 4px; background: #4ea1ff; will-change: transform; }
-      .player.self { background: #ffd24e; }
+      :root {
+        --ink: #2a1e42;
+        --panel: rgba(42, 30, 66, 0.72);
+        --cream: #fff6ec;
+        --pink: #ff8fb8;
+        --gold: #ffd36a;
+        font-family: ui-rounded, "Nunito", "Varela Round", system-ui, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; background: #2b2142; color: var(--cream); overflow: hidden; }
+      #game { position: fixed; inset: 0; }
+      #game canvas { display: block; }
+
+      .panel { background: var(--panel); border-radius: 16px; padding: 10px 14px; backdrop-filter: blur(6px); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25); }
+
+      #hud-left { position: fixed; bottom: 14px; left: 14px; display: flex; flex-direction: column; gap: 8px; max-width: 360px; pointer-events: none; }
+      #floor-line { font-size: 15px; letter-spacing: .04em; opacity: .9; }
+      #floor-line b { font-size: 26px; color: var(--gold); margin-left: 4px; }
+      #lives { display: flex; flex-wrap: wrap; gap: 2px; min-height: 28px; }
+      .heart { font-size: 24px; color: #ff6f9a; text-shadow: 0 2px 0 #b8355f; animation: pop .35s ease-out; }
+      .heart.lost { animation: lose .6s ease-in forwards; }
+      @keyframes pop { from { transform: scale(.2); } 70% { transform: scale(1.25); } to { transform: scale(1); } }
+      @keyframes lose { to { transform: translateY(-14px) scale(1.6) rotate(20deg); opacity: 0; } }
+      #objective { font-size: 14px; line-height: 1.35; }
+      #objective.open { color: var(--gold); font-weight: 700; }
+
+      #hud-right { position: fixed; bottom: 14px; right: 14px; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; pointer-events: none; }
+      #party { display: flex; flex-direction: column; gap: 4px; min-width: 190px; }
+      .member { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+      .member.self { font-weight: 700; }
+      .member.away { opacity: .5; }
+      .member .dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255,255,255,.5); }
+      .member .kills { margin-left: auto; opacity: .8; font-size: 13px; }
+      #minimap { display: block; max-width: 190px; max-height: 190px; image-rendering: pixelated; }
+
+      #banner { position: fixed; left: 50%; top: 26%; transform: translate(-50%, -50%) scale(.85); text-align: center; opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; }
+      #banner.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      #banner .title { font-size: 52px; font-weight: 800; color: var(--cream); text-shadow: 0 4px 0 #7a5bb8, 0 8px 24px rgba(0,0,0,.35); }
+      #banner .subtitle { font-size: 18px; margin-top: 6px; color: var(--gold); text-shadow: 0 2px 0 rgba(0,0,0,.35); }
+
+      #toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; font-weight: 700; }
+      #toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+      #help { position: fixed; left: 50%; top: 14px; transform: translateX(-50%); font-size: 13px; opacity: .75; pointer-events: none; white-space: nowrap; }
+      kbd { background: rgba(255,255,255,.14); border-radius: 6px; padding: 1px 6px; font: inherit; font-weight: 700; }
+
+      #status { position: fixed; inset: 0; display: none; place-items: center; align-content: center; gap: 12px; background: rgba(43, 33, 66, .55); font-size: 22px; font-weight: 700; }
+      #status.show { display: grid; }
+      #status p { margin: 0; }
+      #status button { font: inherit; font-size: 16px; padding: 8px 20px; border-radius: 999px; border: 0; background: var(--pink); color: var(--ink); cursor: pointer; }
     </style>
   </head>
   <body>
-    <h1>Colyseus</h1>
-    <p id="status">Connecting…</p>
-    <div id="arena"></div>
-    <p>Move with <kbd>WASD</kbd> or the arrow keys. Open a second tab to see another player.</p>
-    <p><a href="/playground">Playground</a> · <a href="/monitor">Monitor</a></p>
+    <div id="game"></div>
+
+    <div id="hud-left">
+      <div class="panel">
+        <div id="floor-line">FLOOR <b id="floor">1</b></div>
+        <div id="lives"></div>
+      </div>
+      <div class="panel" id="objective"></div>
+    </div>
+
+    <div id="hud-right">
+      <div class="panel" id="party"></div>
+      <div class="panel"><canvas id="minimap" width="180" height="180"></canvas></div>
+    </div>
+
+    <div id="banner"></div>
+    <div id="toast" class="panel"></div>
+    <div id="help" class="panel">
+      <kbd>WASD</kbd> / <kbd>↑↓←→</kbd> move · <kbd>Space</kbd> swing · shared hearts — stick together!
+    </div>
+    <div id="status" class="show"><p>Connecting…</p></div>
+
     <script type="module" src="/src/client/index.ts"></script>
   </body>
 </html>

@@ -10,7 +10,7 @@ import {
 /**
  * Import your Room files
  */
-import { MyRoom } from "./rooms/MyRoom.js";
+import { DungeonRoom } from "./rooms/DungeonRoom.js";
 
 const server = defineServer({
 
@@ -18,7 +18,8 @@ const server = defineServer({
    * Define your room handlers:
    */
   rooms: {
-    my_room: defineRoom(MyRoom).filterBy(["mode"]),
+    // "normal" and "hard" parties never share a dungeon.
+    dungeon: defineRoom(DungeonRoom).filterBy(["mode"]),
   },
 
   /**
