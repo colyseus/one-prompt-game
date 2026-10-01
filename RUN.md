@@ -71,3 +71,8 @@ After the run, from a fresh clone:
 - Prediction (`Predict.get`, `predict.reconciler`) and lag compensation (`allowRewindState`,
   `rewind.lastSeenBy`) use the 0.18 netcode APIs; a grep of `src/` and `test/` for pre-0.18 APIs
   finds nothing, and the shared code never calls `Math.random` or `Date.now`.
+
+The clip on colyseus.io/ai is two Chrome windows at 150 ms ± 20 ms simulated round trip (the SDK
+debug panel's latency simulator), each driven by a small keyboard bot. The bot reads positions from
+the dev build's `globalThis.room`, path-finds over the game's own `generateDungeon()` map, and plays
+only through key presses.
