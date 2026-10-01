@@ -12,7 +12,14 @@ import {
  */
 import { DungeonRoom } from "./rooms/DungeonRoom.js";
 
+// Production runs on the shared demos box (demos.colyseus.cloud/one-prompt-game), where nginx
+// routes /one-prompt-game/<port>/ to this process's socket, so seat reservations must carry it.
+const production = process.env.COLYSEUS_CLOUD !== undefined;
+const port = 2567 + Number(process.env.NODE_APP_INSTANCE || "0");
+const publicAddressBase = process.env.PUBLIC_ADDRESS_BASE ?? "demos.colyseus.cloud/one-prompt-game";
+
 const server = defineServer({
+  ...(production && { publicAddress: `${publicAddressBase}/${port}` }),
 
   /**
    * Define your room handlers:
@@ -33,6 +40,7 @@ const server = defineServer({
     api_hello: createEndpoint("/api/hello", { method: "GET" }, async (ctx) => {
       return { message: "Hello World" };
     }),
+    health: createEndpoint("/health", { method: "GET" }, async () => ({ ok: true, time: Date.now() })),
   }),
 
   /**

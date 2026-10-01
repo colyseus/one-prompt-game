@@ -32,8 +32,9 @@ async function main() {
   // Dev panel + network simulator: `__net(150, 30)` in the console = 150ms RTT ± 30ms.
   if (import.meta.env.DEV) { await import("@colyseus/sdk/debug"); }
 
+  // The Cloudflare Pages build points at the shared demos server (.env.client); dev serves both from one origin.
   const client = new ColyseusSDK<typeof server>(
-    `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}`,
+    import.meta.env.VITE_SERVER_URL ?? `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}`,
   );
   const mode = new URLSearchParams(location.search).get("mode") === "hard" ? "hard" : "normal";
   const room = await client.joinOrCreate("dungeon", { mode });
