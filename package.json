@@ -17,7 +17,7 @@
     "build:client": "vite build --mode client"
   },
   "author": "",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "devDependencies": {
     "@colyseus/loadtest": "^0.18.1",
     "@colyseus/sdk": "^0.18.1",
